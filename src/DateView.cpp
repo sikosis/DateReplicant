@@ -193,6 +193,7 @@ void DateView::applyChanges(void) {
 void DateView::AttachedToWindow(void) {
 	BView::AttachedToWindow();
 	applySettings();
+	Pulse();
 	Invalidate();
 }
 //---------------------------------------------------------------------------------------------------------------------------------//

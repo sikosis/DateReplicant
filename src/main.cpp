@@ -19,8 +19,7 @@ DateApp::DateApp(): BApplication(app_sig) {
 
 
 int main() {
-	try
-	{
+	try {
 		DateApp app;
 		app.Run();
 	}

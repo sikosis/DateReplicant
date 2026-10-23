@@ -13,7 +13,7 @@ SRCS = \
 RDEFS = resources/DateReplicant.rdef
 RSRCS =
 
-LIBS = be translation
+LIBS = be translation $(STDCPPLIBS)
 LIBPATHS =
 SYSTEM_INCLUDE_PATHS =
 LOCAL_INCLUDE_PATHS = src

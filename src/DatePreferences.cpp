@@ -12,7 +12,7 @@
 #include "PreferencesTools.h"
 
 enum {
-	BACKGROUNG_AM = 0, BACKGROUNG_PM, FONTDAY, FONTMONTH, FONTYEAR, POSITIONDAY,
+	BACKGROUND_AM = 0, BACKGROUND_PM, FONTDAY, FONTMONTH, FONTYEAR, POSITIONDAY,
 	POSITIONMONTH, POSITIONYEAR, DAYVISIBLE, MONTHVISIBLE, YEARVISIBLE, 
 	DAYSTRING, MONTHSTRING, YEARSTRING
 };
@@ -21,8 +21,8 @@ struct {
 	const char *name;
 	int type;
 } static const VariableInfo[] = {
-	{ "Background_AM"	, BACKGROUNG_AM},
-	{ "Background_PM"	, BACKGROUNG_PM},
+	{ "Background_AM"	, BACKGROUND_AM},
+	{ "Background_PM"	, BACKGROUND_PM},
 	{ "FontDay"			, FONTDAY},
 	{ "FontMonth"		, FONTMONTH},
 	{ "FontYear"		, FONTYEAR},
@@ -117,10 +117,10 @@ void DatePreferences::loadSettings(const char *fileName) {
 	for (unsigned i = 0; i < sizeof(VariableInfo)/sizeof(VariableInfo[0]); i++) {
 		if (fscanf(f, "%14s", tmp) == 1 && strcmp(tmp, VariableInfo[i].name) == 0) {
 			switch (VariableInfo[i].type) {
-				case BACKGROUNG_AM:
+				case BACKGROUND_AM:
 					date->path_image[0]->SetTo(getString(f).c_str());
 					break;
-				case BACKGROUNG_PM:
+				case BACKGROUND_PM:
 					date->path_image[1]->SetTo(getString(f).c_str());
 					break;					
 				case FONTDAY:
@@ -228,7 +228,7 @@ void DatePreferences::setViewSettings(FILE *f, unsigned i) {
 	if (i >= sizeof(date->s_view)/sizeof(date->s_view[0]))
 		throw DateException(std::string("Undefined StringView #") + tmp);
 
-	std::string s = "", name = "", style = "";
+	std::string name = "", style = "";
 	uint8 r = 0, g = 0, b = 0, a = 0;
 	
 	if (date->s_view[i]) {
