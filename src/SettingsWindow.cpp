@@ -84,6 +84,7 @@ static const char *help_text =
 	"%m   Month number (01–12)\n"
 	"%M   Minute (00–59)\n"
 	"%n   Newline\n"
+	"%o   DateReplicant ordinal suffix (st, nd, rd or th)\n"
 	"%p   Locale AM or PM marker\n"
 	"%r   Locale 12-hour time\n"
 	"%R   Time as %H:%M\n"

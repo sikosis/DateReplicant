@@ -10,6 +10,7 @@
 #include <cstring>
 #include <ctime>
 
+#include "DateFormatter.h"
 #include "DateTextView.h"
 #include "ReplicantMenu.h"
 
@@ -143,7 +144,7 @@ void DateTextView::updateText() {
 	if (localtime_r(&current, &local_time) == NULL)
 		return;
 
-	if (strftime(buffer, sizeof(buffer), date_format.String(), &local_time) == 0)
+	if (formatDate(buffer, sizeof(buffer), date_format.String(), &local_time) == 0)
 		return;
 
 	if (strcmp(buffer, text.String()) == 0)

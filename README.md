@@ -58,9 +58,11 @@ TextString "%a %d %b %Y"
 ```
 
 Format strings use `strftime` syntax, so values such as `%A`, `%B` and `%Y`
-are also supported. Right-click either the graphical replicant or the compact
-text item and choose **Settings…** to open the built-in editor. Its **Help** tab
-explains every setting and provides a legend for the supported `%` values.
+are also supported. DateReplicant adds `%o` for the day-of-month ordinal suffix,
+so `%d%o` produces values such as `01st`, `02nd`, `03rd` and `11th`. Right-click
+either the graphical replicant or the compact text item and choose
+**Settings…** to open the built-in editor. Its **Help** tab explains every
+setting and provides a legend for the supported `%` values.
 **Save** writes changes without refreshing the displays; **Apply** saves and
 refreshes the open graphical view and both Deskbar replicants. `TextString`
 controls the complete date shown by the compact Deskbar item; existing settings

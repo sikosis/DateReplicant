@@ -13,6 +13,7 @@
 #include <cstdio>
 #include <cstring>
 #include "AppMessages.h"
+#include "DateFormatter.h"
 #include "DateView.h"
 #include "ReplicantMenu.h"
 
@@ -225,7 +226,7 @@ void DateView::Pulse(void) {
 
 	for (unsigned i = 0; i < sizeof(s_view)/sizeof(s_view[0]); i++) {
 		if (s_view[i]) {
-			if (strftime(tmp_buf, sizeof(tmp_buf), OutString[i].String(),
+			if (formatDate(tmp_buf, sizeof(tmp_buf), OutString[i].String(),
 					&local_time) > 0 && strcmp(tmp_buf, s_view[i]->Text()) != 0)
 				s_view[i]->SetText(tmp_buf);
 		}

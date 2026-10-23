@@ -8,6 +8,7 @@ SRCS = \
 	src/main.cpp \
 	src/DatePreferences.cpp \
 	src/PreferencesTools.cpp \
+	src/DateFormatter.cpp \
 	src/DateView.cpp \
 	src/DateTextView.cpp \
 	src/ReplicantMenu.cpp \
