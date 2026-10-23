@@ -12,7 +12,9 @@
 #include <Alert.h>
 #include <cstdio>
 #include <cstring>
+#include "AppMessages.h"
 #include "DateView.h"
+#include "ReplicantMenu.h"
 
 extern const char *app_sig;
 extern const char *resources_name;
@@ -199,6 +201,21 @@ void DateView::AttachedToWindow(void) {
 //---------------------------------------------------------------------------------------------------------------------------------//
 
 
+void DateView::MouseDown(BPoint where) {
+	int32 buttons = 0;
+	if (Window() != NULL && Window()->CurrentMessage() != NULL)
+		Window()->CurrentMessage()->FindInt32("buttons", &buttons);
+
+	if ((buttons & B_SECONDARY_MOUSE_BUTTON) != 0) {
+		showReplicantMenu(this, where);
+		return;
+	}
+
+	BView::MouseDown(where);
+}
+//---------------------------------------------------------------------------------------------------------------------------------//
+
+
 void DateView::Pulse(void) {
 	time_t current = time(0);
 	struct tm local_time;
@@ -284,7 +301,7 @@ void DateView::applySettings(bool changes) {
 void DateView::MessageReceived(BMessage *msg) {
 	switch(msg->what) {
 		case B_ABOUT_REQUESTED:
-			(new BAlert("About Date", "...by Vlad B. _sl@mail.ru","OK"))->Go();
+			sendDateReplicantMessage(kMsgShowAbout);
 			break;
 		default:
 			BView::MessageReceived(msg);

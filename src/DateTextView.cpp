@@ -2,12 +2,14 @@
 #include <Font.h>
 #include <InterfaceDefs.h>
 #include <Message.h>
+#include <Window.h>
 
 #include <cstdio>
 #include <cstring>
 #include <ctime>
 
 #include "DateTextView.h"
+#include "ReplicantMenu.h"
 
 extern const char *app_sig;
 
@@ -72,6 +74,21 @@ void DateTextView::Draw(BRect) {
 
 	SetHighUIColor(B_PANEL_TEXT_COLOR);
 	DrawString(text.String(), BPoint(horizontal_padding, baseline));
+}
+//---------------------------------------------------------------------------------------------------------------------------------//
+
+
+void DateTextView::MouseDown(BPoint where) {
+	int32 buttons = 0;
+	if (Window() != NULL && Window()->CurrentMessage() != NULL)
+		Window()->CurrentMessage()->FindInt32("buttons", &buttons);
+
+	if ((buttons & B_SECONDARY_MOUSE_BUTTON) != 0) {
+		showReplicantMenu(this, where);
+		return;
+	}
+
+	BView::MouseDown(where);
 }
 //---------------------------------------------------------------------------------------------------------------------------------//
 

@@ -15,6 +15,7 @@ class DateTextView: public BView {
 
 		void AttachedToWindow();
 		void Draw(BRect);
+		void MouseDown(BPoint where);
 		void Pulse();
 
 	private:

@@ -79,13 +79,18 @@ DatePreferences::DatePreferences():
 	
 		if (find_directory(B_USER_SETTINGS_DIRECTORY, &path) == B_OK) {
 			path.Append(settings_file);
-			
-			if (path.InitCheck() != B_OK || 
-				BFile(path.Path(), B_READ_ONLY).InitCheck() != B_OK) {
-				saveSettings(path.Path());				
+
+			try {
+				if (path.InitCheck() != B_OK ||
+					BFile(path.Path(), B_READ_ONLY).InitCheck() != B_OK) {
+					saveSettings(path.Path());
+				}
+
+				loadSettings(path.Path());
 			}
-				
-			loadSettings(path.Path());
+			catch (const ToolsException &) {
+				date->applySettings();
+			}
 		}
 	
 		ResizeTo(date->Bounds().Width(), date->Bounds().Height());

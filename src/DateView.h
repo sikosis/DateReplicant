@@ -33,6 +33,7 @@ class DateView: public BView
 	static BArchivable *Instantiate(BMessage *archive);
 	
 	void AttachedToWindow(void);
+	void MouseDown(BPoint where);
 	void Pulse(void);
 	void MessageReceived(BMessage *msg);
 };

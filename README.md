@@ -57,7 +57,15 @@ YearString "%y"
 ```
 
 Format strings use `strftime` syntax, so values such as `%A`, `%B` and `%Y`
-are also supported. Changes are read when the application starts.
+are also supported. Right-click either the graphical replicant or the compact
+text item and choose **Settings…** to open the built-in editor. Its **Help** tab
+explains every setting and provides a legend for the supported `%` values. Save
+the file, then restart DateReplicant or re-add its replicants to apply the
+changes.
+
+The same right-click menu includes **About DateReplicant…**, which opens the
+project's About window with its version, credits, source link and licence
+information.
 
 ## Heritage
 
