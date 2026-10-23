@@ -15,6 +15,7 @@
 #include <View.h>
 
 #include <cstring>
+#include <limits>
 
 #include "SettingsWindow.h"
 
@@ -202,7 +203,8 @@ void SettingsWindow::loadSettings() {
 
 	off_t size = 0;
 	status = file.GetSize(&size);
-	if (status != B_OK || size > B_MAXINT32) {
+	if (status != B_OK
+		|| size > static_cast<off_t>(std::numeric_limits<int32>::max())) {
 		setStatus("Unable to read the settings file",
 			status == B_OK ? B_FILE_TOO_LARGE : status);
 		return;
