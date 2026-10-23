@@ -19,8 +19,10 @@ class DateTextView: public BView {
 		void Pulse();
 
 	private:
+		void loadSettings();
 		void updateText();
 
+		BString date_format;
 		BString text;
 };
 

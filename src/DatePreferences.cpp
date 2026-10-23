@@ -53,7 +53,35 @@ static const char *default_settings =
 	"YearVisible \"On\"\n"
 	"DayString \"%d\"\n"
 	"MonthString \"%b\"\n"
-	"YearString \"%y\"";
+	"YearString \"%y\"\n"
+	"TextString \"%a %d %b %Y\"";
+
+static void ensureTextStringSetting(const char *fileName) {
+	FILE *file = fopen(fileName, "rt");
+	char line[1024];
+	char name[32];
+	bool found = false;
+
+	if (file != NULL) {
+		while (fgets(line, sizeof(line), file) != NULL) {
+			if (sscanf(line, "%31s", name) == 1 && strcmp(name, "TextString") == 0) {
+				found = true;
+				break;
+			}
+		}
+		fclose(file);
+	}
+
+	if (found)
+		return;
+
+	file = fopen(fileName, "at");
+	if (file != NULL) {
+		fprintf(file, "\nTextString \"%%a %%d %%b %%Y\"\n");
+		fclose(file);
+	}
+}
+//---------------------------------------------------------------------------------------------------------------------------------//
 
 class DateException {
 	public:
@@ -86,6 +114,7 @@ DatePreferences::DatePreferences():
 					saveSettings(path.Path());
 				}
 
+				ensureTextStringSetting(path.Path());
 				loadSettings(path.Path());
 			}
 			catch (const ToolsException &) {

@@ -54,6 +54,7 @@ YearVisible "On"
 DayString "%d"
 MonthString "%b"
 YearString "%y"
+TextString "%a %d %b %Y"
 ```
 
 Format strings use `strftime` syntax, so values such as `%A`, `%B` and `%Y`
@@ -61,7 +62,8 @@ are also supported. Right-click either the graphical replicant or the compact
 text item and choose **Settings…** to open the built-in editor. Its **Help** tab
 explains every setting and provides a legend for the supported `%` values. Save
 the file, then restart DateReplicant or re-add its replicants to apply the
-changes.
+changes. `TextString` controls the complete date shown by the compact Deskbar
+item; existing settings files are upgraded with the default value automatically.
 
 The same right-click menu includes **About DateReplicant…**, which opens the
 project's About window with its version, credits, source link and licence

@@ -51,6 +51,10 @@ static const char *help_text =
 	"    Text formatted with the strftime codes below. Ordinary text is shown\n"
 	"    unchanged, and %% displays a percent sign.\n"
 	"\n"
+	"TextString\n"
+	"    Format for the compact text item in Deskbar. The default is\n"
+	"    \"%a %d %b %Y\".\n"
+	"\n"
 	"Date and time format codes\n"
 	"\n"
 	"%a   Abbreviated weekday name (Fri)\n"
@@ -106,13 +110,14 @@ static status_t settingsPath(BPath &path) {
 static BView *createHelpView() {
 	BTextView *help = new BTextView("Help");
 	help->SetFontAndColor(be_fixed_font);
-	help->SetText(help_text);
 	help->MakeEditable(false);
 	help->MakeSelectable(true);
 	help->SetWordWrap(false);
 
 	BScrollView *scroll = new BScrollView("format legend scroll", help,
 		B_FRAME_EVENTS, true, true, B_FANCY_BORDER);
+	help->SetText(help_text);
+	help->ScrollTo(0.0f, 0.0f);
 	BView *view = new BView("Help", B_WILL_DRAW);
 	view->SetViewUIColor(B_PANEL_BACKGROUND_COLOR);
 	BLayoutBuilder::Group<>(view, B_VERTICAL, 0.0f)
