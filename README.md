@@ -10,10 +10,11 @@
   <img src="https://img.shields.io/badge/C%2B%2B-17-00599c" alt="C++17">
 </p>
 
-DateReplicant is a small Haiku application and Deskbar replicant that displays
-the day, month and year over a configurable background. It modernises Vlad B.'s
-original Date 0.01 while retaining its settings format and application
-signature. The untouched historical source is kept in
+DateReplicant is a small Haiku application with two Deskbar displays: the
+original graphical replicant shows the day, month and year over a configurable
+background, while a compact text item shows the complete date directly in
+Deskbar. It modernises Vlad B.'s original Date 0.01 while retaining its settings
+format and application signature. The untouched historical source is kept in
 [`DateReplicant-Original`](DateReplicant-Original).
 
 ## Build
@@ -25,8 +26,11 @@ the development tools installed:
 make
 ```
 
-The resulting `DateReplicant` application can be launched normally. Use its
-dragger to add the view to Deskbar.
+The resulting `DateReplicant` application can be launched normally. It installs
+the text date in Deskbar on first launch without adding duplicates. Use the
+graphical view's dragger to add the original display to Deskbar as well. The
+compact item uses the locale-aware format `%a %d %b %Y`, for example
+`Fri 23 Oct 2026`.
 
 ## Configuration
 

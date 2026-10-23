@@ -8,7 +8,8 @@ SRCS = \
 	src/main.cpp \
 	src/DatePreferences.cpp \
 	src/PreferencesTools.cpp \
-	src/DateView.cpp
+	src/DateView.cpp \
+	src/DateTextView.cpp
 
 RDEFS = resources/DateReplicant.rdef
 RSRCS =
