@@ -3,7 +3,9 @@
 
 enum {
 	kMsgShowSettings = 'dStg',
-	kMsgShowAbout = 'dAbt'
+	kMsgShowAbout = 'dAbt',
+	kMsgApplySettings = 'dApl',
+	kMsgQuitReplicant = 'dQut'
 };
 
 #endif /* APPMESSAGES_H */

@@ -1,14 +1,18 @@
+#include <Application.h>
 #include <Button.h>
+#include <Deskbar.h>
 #include <Errors.h>
 #include <File.h>
 #include <FindDirectory.h>
 #include <Font.h>
 #include <InterfaceDefs.h>
 #include <LayoutBuilder.h>
+#include <ListView.h>
 #include <Message.h>
 #include <Path.h>
 #include <ScrollView.h>
 #include <String.h>
+#include <StringItem.h>
 #include <StringView.h>
 #include <TabView.h>
 #include <TextView.h>
@@ -17,6 +21,8 @@
 #include <cstring>
 #include <limits>
 
+#include "AppMessages.h"
+#include "DateTextView.h"
 #include "SettingsWindow.h"
 
 extern const char *settings_file;
@@ -31,6 +37,8 @@ static const char *help_text =
 	"\n"
 	"Keep the settings in the displayed order, with one setting on each line.\n"
 	"Text values must remain inside double quotes.\n"
+	"Save writes the file without refreshing the displays. Apply saves and\n"
+	"refreshes the open view and both Deskbar replicants.\n"
 	"\n"
 	"Background_AM / Background_PM\n"
 	"    Path to the image used before or after midday. An empty path uses the\n"
@@ -108,16 +116,24 @@ static status_t settingsPath(BPath &path) {
 
 
 static BView *createHelpView() {
-	BTextView *help = new BTextView("Help");
-	help->SetFontAndColor(be_fixed_font);
-	help->MakeEditable(false);
-	help->MakeSelectable(true);
-	help->SetWordWrap(false);
+	BListView *help = new BListView("Help", B_SINGLE_SELECTION_LIST);
+	help->SetFont(be_fixed_font);
 
 	BScrollView *scroll = new BScrollView("format legend scroll", help,
 		B_FRAME_EVENTS, true, true, B_FANCY_BORDER);
-	help->SetText(help_text);
-	help->ScrollTo(0.0f, 0.0f);
+	const char *line_start = help_text;
+	while (*line_start != '\0') {
+		const char *line_end = strchr(line_start, '\n');
+		int32 length = line_end == NULL
+			? static_cast<int32>(strlen(line_start))
+			: static_cast<int32>(line_end - line_start);
+		BString line;
+		line.SetTo(line_start, length);
+		help->AddItem(new BStringItem(line.String()));
+		if (line_end == NULL)
+			break;
+		line_start = line_end + 1;
+	}
 	BView *view = new BView("Help", B_WILL_DRAW);
 	view->SetViewUIColor(B_PANEL_BACKGROUND_COLOR);
 	BLayoutBuilder::Group<>(view, B_VERTICAL, 0.0f)
@@ -155,7 +171,9 @@ SettingsWindow::SettingsWindow():
 		new BMessage(kMsgReloadSettings));
 	BButton *save_button = new BButton("save", "Save",
 		new BMessage(kMsgSaveSettings));
-	save_button->MakeDefault(true);
+	BButton *apply_button = new BButton("apply", "Apply",
+		new BMessage(kMsgApplySettings));
+	apply_button->MakeDefault(true);
 	BButton *close_button = new BButton("close", "Close",
 		new BMessage(B_QUIT_REQUESTED));
 
@@ -166,6 +184,7 @@ SettingsWindow::SettingsWindow():
 			.Add(status_view, 1.0f)
 			.Add(reload_button)
 			.Add(save_button)
+			.Add(apply_button)
 			.Add(close_button)
 		.End();
 
@@ -182,6 +201,9 @@ void SettingsWindow::MessageReceived(BMessage *message) {
 			break;
 		case kMsgSaveSettings:
 			saveSettings();
+			break;
+		case kMsgApplySettings:
+			applySettings();
 			break;
 		default:
 			BWindow::MessageReceived(message);
@@ -231,36 +253,69 @@ void SettingsWindow::loadSettings() {
 //---------------------------------------------------------------------------------------------------------------------------------//
 
 
-void SettingsWindow::saveSettings() {
+void SettingsWindow::applySettings() {
+	status_t status = saveSettings();
+	if (status != B_OK)
+		return;
+
+	status = reloadTextReplicant();
+	if (status != B_OK) {
+		setStatus("Settings saved, but the Deskbar text could not be refreshed", status);
+		return;
+	}
+
+	be_app->PostMessage(kMsgApplySettings);
+	status_view->SetText("Saved and applied to the open view and Deskbar replicants.");
+}
+//---------------------------------------------------------------------------------------------------------------------------------//
+
+
+status_t SettingsWindow::reloadTextReplicant() {
+	BDeskbar deskbar;
+	if (!deskbar.IsRunning() || !deskbar.HasItem(DateTextView::ItemName()))
+		return B_OK;
+
+	status_t status = deskbar.RemoveItem(DateTextView::ItemName());
+	if (status != B_OK)
+		return status;
+
+	DateTextView text_view;
+	return deskbar.AddItem(&text_view);
+}
+//---------------------------------------------------------------------------------------------------------------------------------//
+
+
+status_t SettingsWindow::saveSettings() {
 	BPath path;
 	status_t status = settingsPath(path);
 	if (status != B_OK) {
 		setStatus("Unable to locate the settings file", status);
-		return;
+		return status;
 	}
 
 	BFile file(path.Path(), B_WRITE_ONLY | B_CREATE_FILE | B_ERASE_FILE);
 	status = file.InitCheck();
 	if (status != B_OK) {
 		setStatus("Unable to open the settings file", status);
-		return;
+		return status;
 	}
 
 	ssize_t length = editor->TextLength();
 	ssize_t written = file.Write(editor->Text(), length);
 	if (written != length) {
-		setStatus("Unable to save the complete settings file",
-			written < 0 ? written : B_IO_ERROR);
-		return;
+		status = written < 0 ? written : B_IO_ERROR;
+		setStatus("Unable to save the complete settings file", status);
+		return status;
 	}
 
 	status = file.Sync();
 	if (status != B_OK) {
 		setStatus("Unable to finish saving the settings file", status);
-		return;
+		return status;
 	}
 
-	status_view->SetText("Saved. Restart or re-add the replicants to apply changes.");
+	status_view->SetText("Saved. Choose Apply to refresh the running views.");
+	return B_OK;
 }
 //---------------------------------------------------------------------------------------------------------------------------------//
 

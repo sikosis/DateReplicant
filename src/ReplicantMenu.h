@@ -7,6 +7,7 @@
 class BView;
 
 void sendDateReplicantMessage(uint32 what);
-void showReplicantMenu(BView *owner, BPoint where);
+void showReplicantMenu(BView *owner, BPoint where,
+	const char *deskbarItemName = NULL);
 
 #endif /* REPLICANTMENU_H */

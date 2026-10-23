@@ -88,7 +88,7 @@ void DateTextView::MouseDown(BPoint where) {
 		Window()->CurrentMessage()->FindInt32("buttons", &buttons);
 
 	if ((buttons & B_SECONDARY_MOUSE_BUTTON) != 0) {
-		showReplicantMenu(this, where);
+		showReplicantMenu(this, where, ItemName());
 		return;
 	}
 

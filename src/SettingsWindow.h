@@ -13,8 +13,10 @@ class SettingsWindow: public BWindow {
 		void MessageReceived(BMessage *message);
 
 	private:
+		void applySettings();
 		void loadSettings();
-		void saveSettings();
+		status_t reloadTextReplicant();
+		status_t saveSettings();
 		void setStatus(const char *prefix, status_t status = B_OK);
 
 		BTextView *editor;

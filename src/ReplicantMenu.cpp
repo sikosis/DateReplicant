@@ -1,3 +1,4 @@
+#include <Deskbar.h>
 #include <InterfaceDefs.h>
 #include <MenuItem.h>
 #include <Message.h>
@@ -22,18 +23,29 @@ void sendDateReplicantMessage(uint32 what) {
 //---------------------------------------------------------------------------------------------------------------------------------//
 
 
-void showReplicantMenu(BView *owner, BPoint where) {
+void showReplicantMenu(BView *owner, BPoint where, const char *deskbarItemName) {
 	BPopUpMenu *menu = new BPopUpMenu("DateReplicant menu", false, false);
 	menu->AddItem(new BMenuItem("Settings" B_UTF8_ELLIPSIS,
 		new BMessage(kMsgShowSettings)));
 	menu->AddSeparatorItem();
 	menu->AddItem(new BMenuItem("About DateReplicant" B_UTF8_ELLIPSIS,
 		new BMessage(kMsgShowAbout)));
+	if (deskbarItemName != NULL) {
+		menu->AddSeparatorItem();
+		menu->AddItem(new BMenuItem("Quit", new BMessage(kMsgQuitReplicant)));
+	}
 
 	BMenuItem *selected = menu->Go(owner->ConvertToScreen(where), false, true);
-	if (selected != NULL && selected->Message() != NULL)
-		sendDateReplicantMessage(selected->Message()->what);
+	uint32 what = selected != NULL && selected->Message() != NULL
+		? selected->Message()->what : 0;
 
 	delete menu;
+
+	if (what == kMsgQuitReplicant && deskbarItemName != NULL) {
+		BDeskbar deskbar;
+		deskbar.RemoveItem(deskbarItemName);
+	} else if (what != 0) {
+		sendDateReplicantMessage(what);
+	}
 }
 //---------------------------------------------------------------------------------------------------------------------------------//

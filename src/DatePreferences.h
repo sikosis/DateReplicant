@@ -21,6 +21,8 @@ class DatePreferences: public BWindow
 	~DatePreferences();
 	
 	bool QuitRequested(void);
+	void ReloadSettings();
+	status_t RefreshDeskbarReplicant();
 };
 
 #endif /* DATEPREFERENCES_H */

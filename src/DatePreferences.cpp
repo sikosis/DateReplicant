@@ -1,5 +1,6 @@
 #include <Application.h>
 #include <ClassInfo.h>
+#include <Deskbar.h>
 #include <Menu.h>
 #include <String.h>
 #include <Path.h>
@@ -136,6 +137,38 @@ DatePreferences::~DatePreferences() {
 bool DatePreferences::QuitRequested(void) {
 	be_app->PostMessage(B_QUIT_REQUESTED);
 	return(TRUE);
+}
+//---------------------------------------------------------------------------------------------------------------------------------//
+
+
+void DatePreferences::ReloadSettings() {
+	BPath path;
+	if (find_directory(B_USER_SETTINGS_DIRECTORY, &path) != B_OK
+		|| path.Append(settings_file) != B_OK) {
+		return;
+	}
+
+	try {
+		ensureTextStringSetting(path.Path());
+		loadSettings(path.Path());
+	}
+	catch (const ToolsException &) {
+		date->applySettings();
+	}
+}
+//---------------------------------------------------------------------------------------------------------------------------------//
+
+
+status_t DatePreferences::RefreshDeskbarReplicant() {
+	BDeskbar deskbar;
+	if (!deskbar.IsRunning() || !deskbar.HasItem(date->Name()))
+		return B_OK;
+
+	status_t status = deskbar.RemoveItem(date->Name());
+	if (status != B_OK)
+		return status;
+
+	return deskbar.AddItem(date);
 }
 //---------------------------------------------------------------------------------------------------------------------------------//
 

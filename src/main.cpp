@@ -22,6 +22,7 @@ class DateApp: public BApplication {
 		void MessageReceived(BMessage *message);
 
 	private:
+		void applySettings();
 		void installTextView();
 		void showSettings();
 };
@@ -51,9 +52,28 @@ void DateApp::MessageReceived(BMessage *message) {
 		case B_ABOUT_REQUESTED:
 			AboutRequested();
 			break;
+		case kMsgApplySettings:
+			applySettings();
+			break;
 		default:
 			BApplication::MessageReceived(message);
 			break;
+	}
+}
+//---------------------------------------------------------------------------------------------------------------------------------//
+
+
+void DateApp::applySettings() {
+	for (int32 index = 0; index < CountWindows(); index++) {
+		DatePreferences *preferences = dynamic_cast<DatePreferences *>(WindowAt(index));
+		if (preferences == NULL)
+			continue;
+
+		if (preferences->Lock()) {
+			preferences->ReloadSettings();
+			preferences->RefreshDeskbarReplicant();
+			preferences->Unlock();
+		}
 	}
 }
 //---------------------------------------------------------------------------------------------------------------------------------//
